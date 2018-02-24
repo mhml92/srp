@@ -38,7 +38,6 @@ local function rad(a, b)
   end
   local ab  = sub(b,a)
   return math.atan2(ab.y,ab.x)
-
 end
 
 local function deltaRad(a, b, c)
@@ -91,27 +90,41 @@ local function getMouseAnalog()
   return (2*mx/width)-1, (2*my/height)-1
 end
 
--- The x,y position of the analog Joystick
--- if the length of the vector (x,y) > 1 then the coordinates are normalized
--- if the length og the vector (x,y) < 0.1 then the vector is truncated to (0,0)
-local function getRightAnalog(joystick)
-  local x,y = joystick:getAxis(3), joystick:getAxis(6)
-  -- normalize input vector
-  local len = math.sqrt(x*x+y*y)
-  if len > 1 then
-    x, y = x/len, y/len
-  elseif len < 0.4 then
-    x, y = 0, 0
-  end
 
+
+local function testJoystickButtons(joystick)
+  local numButtons = joystick:getButtonCount()
+  local buttons = {}
+  for i = 1, numButtons do
+    if joystick:isDown(i) then
+      table.insert(buttons,i)
+    end
+  end
+  if #buttons > 0 then
+    print(I(buttons))
+  end
+end
+
+local function normalize(x,y)
+  local len = length{x=x,y=y}
+  return x/len,y/len
+end
+
+local function normalize_if(x,y)
+  local len = length{x=x,y=y}
+  if len > 1 then
+    return x/len, y/len
+  end
   return x,y
 end
 
 return {
   length = length,
+  normalize = normalize,
+  normalize_if = normalize_if,
   curvature = curvature,
   deltaRad = deltaRad,
   rad = rad,
   getMouseAnalog = getMouseAnalog,
-  getRightAnalog = getRightAnalog
+  testJoystickButtons = testJoystickButtons
 }

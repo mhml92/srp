@@ -96,7 +96,6 @@ end
 function Gesture:draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.print(self.current_zone, 310, 10)
-  love.graphics.setColor(255, 255, 255)
 end
 
 return Gesture
